@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Cumpleaños</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #ffebef;
+            overflow-x: hidden; /* Para evitar la barra de desplazamiento horizontal si los globos se salen */
+        }
+        #pantallaInicio {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #pantallaInicio h1 {
+            font-size: 36px;
+            color: #ff1493;
+            font-weight: bold;
+        }
+        .corazones {
+            font-size: 50px;
+            animation: latidos 1s infinite alternate;
+        }
+        @keyframes latidos {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-top: 20px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        #historia {
+            display: none;
+            position: relative;
+            height: 100vh; /* Asegura que ocupe toda la altura para centrar verticalmente */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #contenedorImagen {
+            position: relative;
+            width: 300px; /* Ancho fijo para el contenedor */
+            height: 300px; /* Alto fijo para el contenedor (puede ajustarse) */
+        }
+        #imagen {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cubre el contenedor manteniendo la proporción */
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #frase {
+            font-size: 22px;
+            font-style: italic;
+            background: linear-gradient(45deg, red, orange,  green, blue, purple);
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-top: 20px;
+            opacity: 0;
+        }
+        #mensaje {
+            font-size: 20px;
+            opacity: 0;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: #d91e7f;
+            text-align: center;
+            
+        }
+        .globo {
+            width: 50px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #f06;
+            position: absolute;
+            bottom: -80px; /* Iniciar fuera de la pantalla */
+            opacity: 0;
+            transform-origin: bottom center;
+        }
+        .confeti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none; /* Para que no interfiera con los clics */
+        }
+        .confeti {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #f06;
+            opacity: 0;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantallaInicio">
+        <div class="corazones">❤️💖💞💕💓</div>
+        <h1>🎉 ¡Feliz Cumpleaños Mi Preciosa Montse! 🎉</h1>
+        <button onclick="mostrarHistoria()">Abrir historia</button>
+    </div>
+
+    <div id="historia">
+        <div class="confeti-container"></div>
+        <div id="contenedorImagen">
+            <img id="imagen" src="imagenes/f1.jpg" alt="Foto de bebé">
+        </div>
+        <p id="frase"></p>
+        <p id="mensaje">Hoy celebramos 19 años de tu historia... y se que continuarás creciendo y forjando tu historia. ¡Te quiero muchísimo Montse!</p>
+    </div>
+
+    <script>
+    let sonido = new Howl({
+    src: ['audio/cancion.mp3'],
+    volume: 0.5
+});
+
+function reproducirAudio() {
+    sonido.play();
+    sonido.seek(20); // Inicia en el segundo 10
+
+    setTimeout(() => {
+        sonido.stop(); // Detiene el audio después de 120 segundos
+    }, 110000); // 120 segundos - 10 segundos de inicio
+}
+
+
+        let fotos = [
+            { src: "imagenes/f1.jpg", frase: "¡Desde el primer instante, llenaste el mundo con tu sonrisa y alegria!" },
+            { src: "imagenes/f2.jpg", frase: "Tus sueños son tan grandes como tu corazón, sigue adelante sin miedo." },
+            { src: "imagenes/f3.jpg", frase: "Cada día es una nueva oportunidad para brillar, y hoy más que nunca, es tu día.." },
+            { src: "imagenes/f4.jpg", frase: "Tu luz ilumina el camino de quienes te rodean, nunca dejes de ser tan especial." },
+            { src: "imagenes/f5.jpg", frase: "Eres fuerte, capaz y llena de magia, nada podrá detenerte." },
+            { src: "imagenes/f6.jpg", frase: "Celebra tu vida, tus logros y todo lo que aún está por venir. Lo mejor está en camino." },
+            { src: "imagenes/f7.jpg", frase: "La vida te ha regalado un nuevo año, úsalo para crecer, soñar y conquistar el mundo." },
+            { src: "imagenes/f8.jpg", frase: "Que la felicidad te acompañe en cada paso de tu camino." },
+            { src: "imagenes/f9.jpeg", frase: "¡Hoy celebramos tu vida y todo lo que eres! ¡Feliz Cumpleaños!" }
+        ];
+
+        
+        let index = 0;
+        const numGlobos = 19;
+        const globos = [];
+        const fraseElement = document.getElementById('frase');
+
+        function crearGlobo() {
+            const globo = document.createElement('div');
+            globo.classList.add('globo');
+            globo.style.backgroundColor = getRandomColor();
+            const startX = Math.random() * window.innerWidth;
+            const delay = Math.random() * 2000; // Retardo aleatorio para la aparición
+            const duration = Math.random() * 3000 + 3000; // Duración aleatoria del ascenso
+            const endY = Math.random() * -300 - 100; // Altura aleatoria a la que suben
+            const scale = Math.random() * 0.5 + 0.7; // Escala aleatoria
+
+            document.getElementById('historia').appendChild(globo);
+            globos.push(globo);
+
+            anime({
+                targets: globo,
+                translateX: startX,
+                translateY: [0, endY],
+                scale: scale,
+                opacity: [0, 1],
+                easing: 'easeOutCubic',
+                duration: duration,
+                delay: 2000 + delay, // Retardo para empezar después de mostrar la historia
+                complete: function() {
+                    // Opcional: eliminar el globo después de que desaparezca
+                    // globo.remove();
+                }
+            });
+
+            anime({
+                targets: globo,
+                scale: [scale, scale * 1.1, scale], // Pequeño rebote
+                rotate: [anime.random(-20, 20), 0],
+                easing: 'easeInOutSine',
+                duration: 1500,
+                loop: true,
+                delay: 2000 + delay + Math.random() * 1000 // Inicio ligeramente escalonado
+            });
+        }
+
+        function crearConfeti() {
+            const container = document.querySelector('.confeti-container');
+            const cantidad = 100; // Cantidad de confeti
+            for (let i = 0; i < cantidad; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('confeti');
+                particle.style.backgroundColor = getRandomColor();
+                const startX = Math.random() * window.innerWidth;
+                const startY = -20;
+                const endY = window.innerHeight + 20;
+                const rotation = Math.random() * 360;
+                const scale = Math.random() * 0.8 + 0.2;
+                const duration = Math.random() * 1000 + 2000; // Duración aleatoria
+
+                container.appendChild(particle);
+
+                anime({
+                    targets: particle,
+                    x: startX,
+                    y: [startY, endY],
+                    rotation: rotation,
+                    scale: scale,
+                    opacity: [0, 1],
+                    easing: 'easeOutQuad',
+                    duration: duration,
+                    complete: function() {
+                        particle.remove(); // Eliminar el confeti después de la animación
+                    }
+                });
+            }
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function mostrarHistoria() {
+            document.getElementById("pantallaInicio").style.display = "none";
+            document.getElementById("historia").style.display = "flex"; /* Cambiar a flex para el centrado */
+            sonido.play();
+            crearConfeti();
+            for (let i = 0; i < numGlobos; i++) {
+                crearGlobo();
+            }
+            mostrarImagenConTransicion();
+        }
+
+        function mostrarImagenConTransicion() {
+            if (index < fotos.length) {
+                const foto = fotos[index];
+                anime({
+                    targets: '#imagen',
+                    opacity: [1, 0],
+                    duration: 3000,
+                    easing: 'easeInOutQuad',
+                    complete: function() {
+                        document.getElementById("imagen").src = foto.src;
+                        anime({
+                            targets: '#imagen',
+                            opacity: [0, 1],
+                            duration: 2000,
+                            easing: 'easeInOutQuad',
+                            complete: function() {
+                                mostrarFrase(foto.frase);
+                            }
+                        });
+                    }
+                });
+            } else {
+                mostrarMensajeFinal();
+            }
+            index++;
+        }
+
+        function mostrarFrase(frase) {
+            fraseElement.textContent = frase;
+            anime({
+                targets: '#frase',
+                opacity: [0, 1],
+                duration: 2000,
+                easing: 'easeInOutQuad',
+                complete: function() {
+                    setTimeout(ocultarFrase, 3000); // Mostrar la frase por 3 segundos
+                }
+            });
+        }
+
+        function ocultarFrase() {
+            anime({
+                targets: '#frase',
+                opacity: [1, 0],
+                duration: 1000,
+                easing: 'easeInOutQuad',
+                complete: function() {
+                    if (index < fotos.length) {
+                        mostrarImagenConTransicion();
+                    } else {
+                        mostrarMensajeFinal();
+                    }
+                }
+            });
+        }
+
+        function mostrarMensajeFinal() {
+        const mensajeElement = document.getElementById("mensaje");
+        anime({
+            targets: mensajeElement,
+            opacity: [0, 1],
+            duration: 3000,
+            easing: 'easeInOutQuad',
+            complete: function() {
+                document.getElementById("reiniciarBtn").style.display = "block"; // Mostrar botón
+            }
+        });
+    }
+
+    function reiniciarHistoria() {
+        document.getElementById("historia").style.display = "none";
+        document.getElementById("pantallaInicio").style.display = "flex";
+        document.getElementById("reiniciarBtn").style.display = "none"; // Ocultar el botón de reinicio nuevamente
+        index = 0; // Reiniciar la secuencia de fotos
+    }
+    </script>
+
+</body>
+</html>
