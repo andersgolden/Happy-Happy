@@ -140,18 +140,11 @@
 
     <script>
     let sonido = new Howl({
-    src: ['audio/cancion.mp3'],
+    src: ['audio/melody.mp3'],
     volume: 0.5
 });
 
-function reproducirAudio() {
-    sonido.play();
-    sonido.seek(20); // Inicia en el segundo 10
 
-    setTimeout(() => {
-        sonido.stop(); // Detiene el audio después de 120 segundos
-    }, 110000); // 120 segundos - 10 segundos de inicio
-}
 
 
         let fotos = [
